@@ -62,5 +62,8 @@ To view more information and help regarding the command options, you can use the
 tiny_packer --help
 ```
 
+## Screenshots
+![](tiny_packer.png)
+
 # License
 MIT

@@ -35,8 +35,8 @@
     },
     "windows": [
       {
-        "title": "gui",
-        "width": 800,
+        "title": "Tiny packer",
+        "width": 960,
         "height": 600
       }
     ],
