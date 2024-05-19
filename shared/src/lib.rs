@@ -127,6 +127,44 @@ pub fn pack_images_auto_size(paths: Vec<&str>, padding: u32) -> Result<RgbaImage
     Ok(final_image)
 }
 
+pub fn pack_images_auto_size_unified(
+    paths: Vec<&str>,
+    padding: u32,
+) -> Result<RgbaImage, ImageError> {
+    let mut width = 0;
+    let mut height = 0;
+    let images: Vec<RgbaImage> = paths
+        .iter()
+        .map(|path| load_image(path).map(|image| image.to_rgba8()))
+        .collect::<Result<Vec<RgbaImage>, ImageError>>()?;
+
+    for image in &images {
+        let (image_width, image_height) = image.dimensions();
+        width = width.max(image_width + padding * 2);
+        height = height.max(image_height + padding * 2);
+    }
+
+    let image_width = width;
+    let image_height = height;
+
+    let images_count = images.len() as u32;
+    width = (images_count as f32).sqrt().ceil() as u32 * width;
+    height = (images_count as f32).sqrt().ceil() as u32 * height;
+
+    let mut atlas = Atlas::new(width, height);
+    let mut final_image = RgbaImage::new(width, height);
+
+    for (_, image) in paths.iter().zip(images) {
+        if let Some(rect) = atlas.add_rect(image_width, image_height, padding) {
+            image::imageops::overlay(&mut final_image, &image, rect.x.into(), rect.y.into());
+        } else {
+            eprintln!("Atlas is too small to fit all images");
+        }
+    }
+
+    Ok(final_image)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

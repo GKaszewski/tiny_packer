@@ -29,7 +29,8 @@ tiny_packer --input <input_files> --output <output_file> [OPTIONS]
 - `--width`: Specify the width of the atlas. Defaults to `512` pixels. This option is ignored if auto sizing is enabled.
 - `--height`: Specify the height of the atlas. Defaults to `512` pixels. This option is ignored if auto sizing is enabled.
 - `--padding`, `-p`: Set the padding between images in the atlas. Defaults to `0` pixels.
-- `--auto_size`, `-a`: Enable or disable automatic sizing of the atlas dimensions. Defaults to `true`. When enabled, the atlas dimensions are calculated based on the input images.
+- `--auto_size`, `-a`: Enable or disable automatic sizing of the atlas dimensions. Defaults to `false`. When enabled, the atlas dimensions are calculated based on the input images.
+- `--unified`: Each cell has the same size (based on largest dimensions of image.) Defaults to `false`. [CLI only for now] 
 
 **Examples:**
 

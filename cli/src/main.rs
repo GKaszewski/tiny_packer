@@ -1,5 +1,5 @@
 use clap::Parser;
-use shared::{pack_images, pack_images_auto_size, save_image};
+use shared::{pack_images, pack_images_auto_size, pack_images_auto_size_unified, save_image};
 
 #[derive(Parser, Debug)]
 #[clap(
@@ -28,10 +28,17 @@ struct Args {
     #[clap(
         short,
         long,
-        default_value = "true",
+        default_value = "false",
         help = "Automatically calculate image dimensions"
     )]
     auto_size: bool,
+    #[clap(
+        short,
+        long,
+        default_value = "false",
+        help = "Unified atlas (all images have the same size)"
+    )]
+    unified: bool,
 }
 
 fn main() {
@@ -42,9 +49,14 @@ fn main() {
     let output_path = args.output;
     let padding = args.padding;
     let auto_size = args.auto_size;
+    let unified = args.unified;
 
     let atlas_image_result = if auto_size {
-        pack_images_auto_size(paths, padding)
+        if unified {
+            pack_images_auto_size_unified(paths, padding)
+        } else {
+            pack_images_auto_size(paths, padding)
+        }
     } else {
         pack_images(paths, atlas_width, atlas_height, padding)
     };
