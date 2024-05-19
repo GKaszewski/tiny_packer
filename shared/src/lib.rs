@@ -148,8 +148,13 @@ pub fn pack_images_auto_size_unified(
     let image_height = height;
 
     let images_count = images.len() as u32;
-    width = (images_count as f32).sqrt().ceil() as u32 * width;
-    height = (images_count as f32).sqrt().ceil() as u32 * height;
+    width = images_count * width + padding * 2;
+    height = images_count * height + padding * 2;
+
+    println!(
+        "width: {}, height: {}, images_count: {}, padding: {}, image_width: {}, image_height: {}",
+        width, height, images_count, padding, image_width, image_height
+    );
 
     let mut atlas = Atlas::new(width, height);
     let mut final_image = RgbaImage::new(width, height);

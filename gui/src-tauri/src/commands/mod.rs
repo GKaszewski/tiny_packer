@@ -1,5 +1,7 @@
 use base64::{engine::general_purpose, Engine as _};
-use shared::{load_image, pack_images, pack_images_auto_size, save_image};
+use shared::{
+    load_image, pack_images, pack_images_auto_size, pack_images_auto_size_unified, save_image,
+};
 use std::io::Cursor;
 
 #[tauri::command]
@@ -9,12 +11,13 @@ pub fn create_atlas_command(
     atlas_height: u32,
     padding: u32,
     auto_size: bool,
+    unified: bool,
 ) -> Result<String, String> {
     let paths = input_paths.iter().map(|s| s.as_str()).collect();
-    let atlas_image_result = if auto_size {
-        pack_images_auto_size(paths, padding)
-    } else {
-        pack_images(paths, atlas_width, atlas_height, padding)
+    let atlas_image_result = match (auto_size, unified) {
+        (true, true) => pack_images_auto_size_unified(paths, padding),
+        (true, false) => pack_images_auto_size(paths, padding),
+        (false, _) => pack_images(paths, atlas_width, atlas_height, padding),
     };
 
     atlas_image_result
@@ -59,14 +62,14 @@ pub fn save_atlas_command(
     atlas_height: u32,
     padding: u32,
     auto_size: bool,
+    unified: bool,
 ) -> Result<(), String> {
     let paths = input_paths.iter().map(|s| s.as_str()).collect();
-    let atlas_image_result = if auto_size {
-        pack_images_auto_size(paths, padding)
-    } else {
-        pack_images(paths, atlas_width, atlas_height, padding)
+    let atlas_image_result = match (auto_size, unified) {
+        (true, true) => pack_images_auto_size_unified(paths, padding),
+        (true, false) => pack_images_auto_size(paths, padding),
+        (false, _) => pack_images(paths, atlas_width, atlas_height, padding),
     };
-
     if let Ok(image) = atlas_image_result {
         save_image(&image, &output_path).map_err(|e| e.to_string())
     } else {

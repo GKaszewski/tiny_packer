@@ -6,6 +6,7 @@ interface State {
   atlasHeight: number;
   padding: number;
   autoSize: boolean;
+  unified: boolean;
   inputPaths: string[];
   imagesBase64Data: string[];
   previewAtlas: string | null;
@@ -23,6 +24,7 @@ interface State {
   setAtlasHeight: (height: number) => void;
   setPadding: (padding: number) => void;
   setAutoSize: (autoSize: boolean) => void;
+  setUnified: (unified: boolean) => void;
   setInputPaths: (paths: string[]) => void;
   setOutputAtlasPath: (path: string) => void;
   clearImages: () => void;
@@ -33,6 +35,7 @@ const useStore = create<State>((set, get) => ({
   atlasWidth: 1024,
   padding: 2,
   autoSize: true,
+  unified: true,
   inputPaths: [],
   imagesBase64Data: [],
   previewAtlas: null,
@@ -65,9 +68,11 @@ const useStore = create<State>((set, get) => ({
         atlasHeight: get().atlasHeight,
         padding: get().padding,
         autoSize: get().autoSize,
+        unified: get().unified,
       });
       set({ previewAtlas: `data:image/png;base64,${base64Image}` });
     } catch (e) {
+      console.log("Failed to generate atlas: ", e);
       alert("Failed to generate atlas: " + e);
     }
     set({ isGeneratingAtlas: false });
@@ -82,8 +87,10 @@ const useStore = create<State>((set, get) => ({
         atlasHeight: get().atlasHeight,
         padding: get().padding,
         autoSize: get().autoSize,
+        unified: get().unified,
       });
     } catch (e) {
+      console.log("Failed to save atlas: ", e);
       alert("Failed to save atlas" + e);
     }
     set({ isSavingAtlas: false });
@@ -113,6 +120,7 @@ const useStore = create<State>((set, get) => ({
   setAtlasHeight: (height: number) => set({ atlasHeight: height }),
   setPadding: (padding: number) => set({ padding }),
   setAutoSize: (autoSize: boolean) => set({ autoSize }),
+  setUnified: (unified: boolean) => set({ unified }),
   setInputPaths: (paths: string[]) => set({ inputPaths: paths }),
   setOutputAtlasPath: (path: string) => set({ outputAtlasPath: path }),
   clearImages: () => set({ imagesBase64Data: [], inputPaths: [] }),

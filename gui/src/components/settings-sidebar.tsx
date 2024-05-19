@@ -7,6 +7,7 @@ const settingsSchema = z.object({
   atlasWidth: z.number().min(1).optional(),
   atlasHeight: z.number().min(1).optional(),
   autoSize: z.boolean(),
+  unified: z.boolean(),
 });
 
 const SettingsSidebar = () => {
@@ -15,9 +16,11 @@ const SettingsSidebar = () => {
   const atlasHeight = useStore((state) => state.atlasHeight);
   const autoSize = useStore((state) => state.autoSize);
   const inputPaths = useStore((state) => state.inputPaths);
+  const unified = useStore((state) => state.unified);
 
   const generateAtlas = useStore((state) => state.generateAtlas);
-  const { setPadding, setAtlasWidth, setAtlasHeight, setAutoSize } = useStore();
+  const { setPadding, setAtlasWidth, setAtlasHeight, setAutoSize, setUnified } =
+    useStore();
 
   useEffect(() => {
     if (inputPaths.length === 0) return;
@@ -27,7 +30,10 @@ const SettingsSidebar = () => {
       atlasHeight: autoSize ? undefined : atlasHeight,
       padding,
       autoSize,
+      unified,
     });
+
+    console.log(result);
 
     if (!result.success) {
       alert("Invalid settings");
@@ -35,7 +41,7 @@ const SettingsSidebar = () => {
     }
 
     generateAtlas();
-  }, [padding, atlasWidth, atlasHeight, autoSize, inputPaths]);
+  }, [padding, atlasWidth, atlasHeight, autoSize, inputPaths, unified]);
 
   return (
     <div className="flex flex-col w-64 h-full text-white p-4">
@@ -77,6 +83,13 @@ const SettingsSidebar = () => {
           className="p-2 bg-slate-700 text-white"
           checked={autoSize}
           onChange={(e) => setAutoSize(e.target.checked)}
+        />
+        <label className="font-semibold mt-2">Unified</label>
+        <input
+          type="checkbox"
+          className="p-2 bg-slate-700 text-white"
+          checked={unified}
+          onChange={(e) => setUnified(e.target.checked)}
         />
       </div>
     </div>
